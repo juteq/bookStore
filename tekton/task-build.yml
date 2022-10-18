@@ -1,0 +1,22 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: build-nodejs-app
+spec:
+  params:
+    - name: source
+      type: string
+      default: https://github.com/waveywaves/juteq-bookStore
+    - name: image
+      type: string
+      default: docker.io/waveywaves/juteq-bookStore
+  stepTemplate:           
+  steps:
+    - name: create-image-and-push 
+      image: gcr.io/kaniko-project/executor
+      command:
+        - /kaniko/executor
+      args:
+        - "--dockerfile=./Dockerfile"
+        - "--destination=$(params.source)"
+        - "--context=$(params.image)/"
